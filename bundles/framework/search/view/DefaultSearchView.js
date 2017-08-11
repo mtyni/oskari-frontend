@@ -26,6 +26,7 @@ Oskari.clazz.define(
         // Actions that get added to the search result popup
         this.resultActions = {};
         this._searchContainer = null;
+        this._lastAutocompleteRequestTime = 0;
 
         this.resultHeaders = [
             {
@@ -200,6 +201,17 @@ Oskari.clazz.define(
         __doAutocompleteSearch : function() {
             var field = this.getField();
             var searchKey = field.getValue(this.instance.safeChars);
+
+            var timeStampNow = Date.now();
+            if (this._lastAutocompleteRequestTime < timeStampNow + 300) {
+                this._lastAutocompleteRequestTime = timeStampNow;
+            }
+            else {
+                return;
+            }
+            if (searchKey.length < 3) {
+                return;
+            }
             this.searchservice.doAutocompleteSearch(searchKey, function(result) {
                 var autocompleteValues =  [];
                 for (var i = 0; i < result.methods.length; i++) {

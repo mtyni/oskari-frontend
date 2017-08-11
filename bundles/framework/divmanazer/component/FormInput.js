@@ -358,7 +358,7 @@ Oskari.clazz.define('Oskari.userinterface.component.FormInput',
             var me = this,
                 input = this._field.find('input');
 
-            input.keyup(function () {
+            input.keyup(function (event) {
                 callback(event);
             });
         },

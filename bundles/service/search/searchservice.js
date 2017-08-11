@@ -30,6 +30,7 @@ Oskari.clazz.define('Oskari.service.search.SearchService',
             }
             sandbox.requestHandler('SearchRequest', this);
             sandbox.registerService(this);
+            this._autocompleteTracker = 0;
         }
     }, {
         /** @static @property __qname fully qualified name for service */
@@ -109,6 +110,10 @@ Oskari.clazz.define('Oskari.service.search.SearchService',
             if(typeof onSuccess !== 'function') {
                 return;
             }
+            var me = this;
+            me._autocompleteTracker = ++me._autocompleteTracker;
+            var tracker = me._autocompleteTracker;
+
             var lang = Oskari.getLang();
             var sb = this.sandbox || Oskari.getSandbox();
             jQuery.ajax({
@@ -122,7 +127,9 @@ Oskari.clazz.define('Oskari.service.search.SearchService',
                     "autocomplete": true
                 },
                 success: function(response) {
-                    onSuccess(response);
+                    if(tracker == me._autocompleteTracker) {
+                        onSuccess(response);
+                    }
                 }
             });
         },
